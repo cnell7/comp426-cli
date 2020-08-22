@@ -1,7 +1,27 @@
-div.menu {
+div {
+  display: block;
   background-color: royalblue;
   text-align: center;
 }
 a {
   padding: 50px;
+}
+ul {
+  list-style-type: square;
+}
+ol {
+  list-style-type: decimal;
+}
+ul li {
+  list-style-type: circle;
+}
+p {
+  color: bisque;
+  font: large;
+}
+nav.hi {
+  display: inline;
+}
+scan {
+  font: large;
 }
