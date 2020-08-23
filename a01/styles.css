@@ -1,19 +1,31 @@
-div {
+body {
+  background-color: blueviolet;
+}
+div:hover {
   display: block;
-  background-color: royalblue;
+  background-color: #ffffff;
   text-align: center;
+}
+h1 {
+  font: small;
+  font-family: Arial, Helvetica, sans-serif;
+}
+nav {
+  padding: 50px;
 }
 a {
   padding: 50px;
 }
 ul {
   list-style-type: square;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 ol {
   list-style-type: decimal;
 }
 ul li {
   list-style-type: circle;
+  border: cyan;
 }
 p {
   color: bisque;
@@ -22,6 +34,8 @@ p {
 nav.hi {
   display: inline;
 }
-scan {
-  font: large;
+
+#k69 {
+  width: 100px;
+  height: 100px;
 }
