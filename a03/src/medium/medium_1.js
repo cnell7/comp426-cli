@@ -1,5 +1,6 @@
 import { variance } from "./data/stats_helpers.js";
 import { maxAndMin } from "../mild/mild_1";
+import { get } from "browser-sync";
 
 /**
  * Gets the sum of an array of numbers.
@@ -25,7 +26,19 @@ export function getSum(array) {
  * let array = [3,2,5,6,2,7,4,2,7,5];
  * console.log(getMedian(array)); // 4.5
  */
-export function getMedian(array) {}
+export function getMedian(array) {
+  if (array.length === 0) return 0;
+
+  array.sort(function (a, b) {
+    return a - b;
+  });
+
+  let half = Math.floor(array.length / 2);
+
+  if (array.length % 2) return array[half];
+
+  return (array[half - 1] + array[half]) / 2.0;
+}
 
 /**
  * Calculates statistics (see below) on an array of numbers.
@@ -46,6 +59,28 @@ export function getMedian(array) {}
   standard_deviation: 1.632993161855452
  }
  */
-export function getStatistics(array) {}
-
-console.log(getSum(numArray));
+export function getStatistics(array) {
+  let obj = {
+    length: 0,
+    sum: 0,
+    mean: 0,
+    median: 0,
+    min: 0,
+    max: 0,
+    variance: 0,
+    standard_deviation: 0,
+  };
+  let maxMin = maxAndMin(array);
+  let sum = getSum(array);
+  let mean = sum / array.length;
+  let variancE = variance(array, mean);
+  obj.min = maxMin.min;
+  obj.max = maxMin.max;
+  obj.length = array.length;
+  obj.sum = sum;
+  obj.mean = mean;
+  obj.median = getMedian(array);
+  obj.variance = variance(array, mean);
+  obj.standard_deviation = Math.sqrt(variancE);
+  return obj;
+}
