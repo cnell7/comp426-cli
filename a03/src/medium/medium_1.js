@@ -1,5 +1,5 @@
 import { variance } from "./data/stats_helpers.js";
-import { maxAndMin } from "../mild/mild_1";
+import { maxAndMin } from "../mild/mild_1.js";
 
 /**
  * Gets the sum of an array of numbers.
