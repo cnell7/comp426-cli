@@ -38,6 +38,49 @@ export function getHyRatio(array) {
   });
   return count / array.length;
 }
+export function groupBy(objectArray, property) {
+  return objectArray.reduce(function (acc, obj) {
+    let key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+}
+export function getMakerHybrids(array) {
+  let returnAr = [];
+  let temp = groupBy(array, "hybrid");
+  temp = groupBy(temp.true, "make");
+  let keys = Object.keys(temp);
+
+  keys.forEach((element) => {
+    let hybrid1 = [];
+    temp[element].forEach((element1) => {
+      hybrid1.push(element1.id);
+    });
+    returnAr.push({ make: element, hybrids: hybrid1 });
+  });
+
+  return returnAr.sort((make_1, make_2) => {
+    return make_2["hybrids"].length - make_1["hybrids"].length;
+  });
+}
+export function getAvgMpgByYearAndHybrid(array) {
+  let returnObj = {};
+  let years = groupBy(array, "year");
+  let yearKeys = Object.keys(years);
+  yearKeys.forEach((element) => {
+    let hyNotHy = { hybrid: null, notHybrid: null };
+    let hybrids = groupBy(years[element], "hybrid");
+    let hybridMPG = getMpg(hybrids[true]);
+    let notHybridMPG = getMpg(hybrids[false]);
+    hyNotHy.hybrid = hybridMPG;
+    hyNotHy.notHybrid = notHybridMPG;
+    returnObj[element] = hyNotHy;
+  });
+  return returnObj;
+}
 /**
  * This object contains data that has to do with every car in the `mpg_data` object.
  *
@@ -112,9 +155,8 @@ export const allCarStats = {
  *
  * }
  */
-export const moreStats = {
-  makerHybrids: undefined,
-  avgMpgByYearAndHybrid: undefined,
-};
 
-console.log(allCarStats.ratioHybrids);
+export const moreStats = {
+  makerHybrids: getMakerHybrids(mpg_data),
+  avgMpgByYearAndHybrid: getAvgMpgByYearAndHybrid(mpg_data),
+};

@@ -17,7 +17,38 @@ queries.
  * sorted by horsepower in descending order.
  *
  */
-export function searchHighPower(car_data, minHorsepower, minTorque) {}
+export function searchHighPower(car_data, minHorsepower, minTorque) {
+  let returnAr = [];
+  let goodHorse = [];
+  let goodTorque = [];
+  let sortedHorse = car_data.sort((make_1, make_2) => {
+    return make_2["horsepower"] - make_1["horsepower"];
+  });
+  let sortedTorque = car_data.sort((make_1, make_2) => {
+    return make_2["torque"] - make_1["torque"];
+  });
+  for (let i = 0; i < sortedHorse.length; i++) {
+    if (sortedHorse[i].horsepower >= minHorsepower) {
+      goodHorse.push(sortedHorse[i]);
+    } else {
+      break;
+    }
+  }
+
+  for (let i = 0; i < sortedTorque.length; i++) {
+    if (sortedHorse[i].horsepower >= minTorque) {
+      goodTorque.push(sortedTorque[i]);
+    } else {
+      break;
+    }
+  }
+  for (let i = 0; i < goodHorse.length; i++) {
+    if (goodTorque.includes(goodHorse[i])) {
+      returnAr.push(goodHorse[i]);
+    }
+  }
+  return returnAr;
+}
 
 /**
  * @param {array} car_data
