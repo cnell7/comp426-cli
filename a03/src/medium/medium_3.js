@@ -116,5 +116,3 @@ export function searchByYear(car_data, years) {
   });
   return returnAr;
 }
-
-console.log(searchName(mpg_data, "2012 Kia"));
