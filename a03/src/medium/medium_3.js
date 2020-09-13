@@ -17,7 +17,31 @@ queries.
  * sorted by horsepower in descending order.
  *
  */
-export function searchHighPower(car_data, minHorsepower, minTorque) {}
+export function searchHighPower(car_data, minHorsepower, minTorque) {
+  let returnAr = [];
+  let goodHorse = [];
+  let goodTorque = [];
+  for (let i = 0; i < car_data.length; i++) {
+    if (car_data[i].horsepower >= minHorsepower) {
+      goodHorse.push(car_data[i]);
+    }
+  }
+
+  for (let i = 0; i < car_data.length; i++) {
+    if (car_data[i].torque >= minTorque) {
+      goodTorque.push(car_data[i]);
+    }
+  }
+  for (let i = 0; i < goodHorse.length; i++) {
+    if (goodTorque.includes(goodHorse[i])) {
+      returnAr.push(goodHorse[i]);
+    }
+  }
+  returnAr = returnAr.sort((make_1, make_2) => {
+    return make_2["horsepower"] - make_1["horsepower"];
+  });
+  return returnAr;
+}
 
 /**
  * @param {array} car_data
@@ -29,7 +53,28 @@ export function searchHighPower(car_data, minHorsepower, minTorque) {}
  * sorted by highway_mpg in descending order
  *
  */
-export function searchMpg(car_data, minCity, minHighway) {}
+export function searchMpg(car_data, minCity, minHighway) {
+  let goodHwyMpg = [];
+  let goodCityMpg = [];
+  let returnAr = [];
+  for (let i = 0; i < car_data.length; i++) {
+    if (car_data[i].highway_mpg >= minHighway) {
+      goodHwyMpg.push(car_data[i]);
+    }
+    if (car_data[i].city_mpg >= minCity) {
+      goodCityMpg.push(car_data[i]);
+    }
+  }
+  for (let i = 0; i < goodHwyMpg.length; i++) {
+    if (goodCityMpg.includes(goodHwyMpg[i])) {
+      returnAr.push(goodHwyMpg[i]);
+    }
+  }
+  returnAr = returnAr.sort((make_1, make_2) => {
+    return make_2["highway_mpg"] - make_1["highway_mpg"];
+  });
+  return returnAr;
+}
 
 /**
  * Find all cars where 'id' contains the search term below.
@@ -39,7 +84,17 @@ export function searchMpg(car_data, minCity, minHighway) {}
  * @param searchTerm A string to that is used for searching
  * @returns {[]} array of cars
  */
-export function searchName(car_data, searchTerm) {}
+export function searchName(car_data, searchTerm) {
+  searchTerm = searchTerm.toLowerCase();
+  return car_data
+    .filter((car) => {
+      return car["id"].toLowerCase().indexOf(searchTerm) > -1;
+    })
+    .sort((car1, car2) => {
+      car2["id"].toLowerCase().indexOf(searchTerm) -
+        car1["id"].toLowerCase().indexOf(searchTerm);
+    });
+}
 
 /**
  * Find all cars made in the years asked for.
@@ -49,4 +104,15 @@ export function searchName(car_data, searchTerm) {}
  * @param {number[]} years - array of years to be included in the results e.g. [2010, 2012]
  * @returns {[]} an array of car objects
  */
-export function searchByYear(car_data, years) {}
+export function searchByYear(car_data, years) {
+  let returnAr = [];
+  for (let i = 0; i < car_data.length; i++) {
+    if (years.includes(car_data[i].year)) {
+      returnAr.push(car_data[i]);
+    }
+  }
+  returnAr = returnAr.sort((make_1, make_2) => {
+    return make_2["year"] - make_1["year"];
+  });
+  return returnAr;
+}

@@ -19,9 +19,15 @@ see under the methods section
  * @param {allCarStats.ratioHybrids} ratio of cars that are hybrids
  */
 export const allCarStats = {
+<<<<<<< HEAD
   avgMpg: undefined,
   allYearStats: undefined,
   ratioHybrids: undefined,
+=======
+  avgMpg: getMpg(mpg_data),
+  allYearStats: getYearStats(mpg_data),
+  ratioHybrids: getHyRatio(mpg_data),
+>>>>>>> a07e4a2a4eae4930776420ad9380572133343d36
 };
 
 /**
@@ -81,9 +87,15 @@ export const allCarStats = {
  *
  * }
  */
+
 export const moreStats = {
+<<<<<<< HEAD
   makerHybrids: undefined,
   avgMpgByYearAndHybrid: undefined,
+=======
+  makerHybrids: getMakerHybrids(mpg_data),
+  avgMpgByYearAndHybrid: getAvgMpgByYearAndHybrid(mpg_data),
+>>>>>>> a07e4a2a4eae4930776420ad9380572133343d36
 };
 
 allCarStats();
