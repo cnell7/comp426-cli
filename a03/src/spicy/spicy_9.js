@@ -199,13 +199,3 @@ export const hasExactly = (arr, test, n) => {
   }
   return false;
 };
-
-console.log(
-  hasExactly(
-    [1, 2, 3],
-    (element) => {
-      return element == 1;
-    },
-    2
-  )
-);

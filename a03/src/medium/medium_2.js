@@ -7,6 +7,80 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 see under the methods section
 */
 
+export function getMpg(array) {
+  let sum = 0;
+  let ci = array.forEach((element) => {
+    sum += element.city_mpg;
+  });
+  ci = sum / array.length;
+  sum = 0;
+  let hi = array.forEach((element) => {
+    sum += element.highway_mpg;
+  });
+  hi = sum / array.length;
+  return { city: ci, highway: hi };
+}
+
+export function getYearStats(array) {
+  let yearMade = [];
+  array.forEach((element) => {
+    yearMade.push(element.year);
+  });
+  return getStatistics(yearMade);
+}
+
+export function getHyRatio(array) {
+  let count = 0;
+  array.forEach((element) => {
+    if (element.hybrid == true) {
+      count++;
+    }
+  });
+  return count / array.length;
+}
+export function groupBy(objectArray, property) {
+  return objectArray.reduce(function (acc, obj) {
+    let key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+}
+export function getMakerHybrids(array) {
+  let returnAr = [];
+  let temp = groupBy(array, "hybrid");
+  temp = groupBy(temp.true, "make");
+  let keys = Object.keys(temp);
+
+  keys.forEach((element) => {
+    let hybrid1 = [];
+    temp[element].forEach((element1) => {
+      hybrid1.push(element1.id);
+    });
+    returnAr.push({ make: element, hybrids: hybrid1 });
+  });
+
+  return returnAr.sort((make_1, make_2) => {
+    return make_2["hybrids"].length - make_1["hybrids"].length;
+  });
+}
+export function getAvgMpgByYearAndHybrid(array) {
+  let returnObj = {};
+  let years = groupBy(array, "year");
+  let yearKeys = Object.keys(years);
+  yearKeys.forEach((element) => {
+    let hyNotHy = { hybrid: null, notHybrid: null };
+    let hybrids = groupBy(years[element], "hybrid");
+    let hybridMPG = getMpg(hybrids[true]);
+    let notHybridMPG = getMpg(hybrids[false]);
+    hyNotHy.hybrid = hybridMPG;
+    hyNotHy.notHybrid = notHybridMPG;
+    returnObj[element] = hyNotHy;
+  });
+  return returnObj;
+}
 /**
  * This object contains data that has to do with every car in the `mpg_data` object.
  *
@@ -19,15 +93,9 @@ see under the methods section
  * @param {allCarStats.ratioHybrids} ratio of cars that are hybrids
  */
 export const allCarStats = {
-<<<<<<< HEAD
-  avgMpg: undefined,
-  allYearStats: undefined,
-  ratioHybrids: undefined,
-=======
   avgMpg: getMpg(mpg_data),
   allYearStats: getYearStats(mpg_data),
   ratioHybrids: getHyRatio(mpg_data),
->>>>>>> a07e4a2a4eae4930776420ad9380572133343d36
 };
 
 /**
@@ -89,13 +157,6 @@ export const allCarStats = {
  */
 
 export const moreStats = {
-<<<<<<< HEAD
-  makerHybrids: undefined,
-  avgMpgByYearAndHybrid: undefined,
-=======
   makerHybrids: getMakerHybrids(mpg_data),
   avgMpgByYearAndHybrid: getAvgMpgByYearAndHybrid(mpg_data),
->>>>>>> a07e4a2a4eae4930776420ad9380572133343d36
 };
-
-allCarStats();
