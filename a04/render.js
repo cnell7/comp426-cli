@@ -16,12 +16,26 @@ export const renderHeroCard = function (hero) {
   // TODO: Generate HTML elements to represent the hero
   // TODO: Return these elements as a string, HTMLElement, or jQuery object
   // Example: return `<div>${hero.name}</div>`;
-  let returnHTML = $("<div class = 'column is-one-quarter'</div>");
-  let img = $("<img src = '" + hero.img + "'>");
-  let firstName = $("<h1></h1>").append(hero.first);
-  let lastName = $("<h2></h2>").append(hero.last);
-  let heroName = $("<h3></h3>").append(hero.name);
-  returnHTML.append(img).append(firstName).append(lastName).append(heroName);
+  let returnHTML = $(
+    "<div style = 'text-align: center; background-color: " +
+      hero.backgroundColor +
+      "' class = 'column is-one-quarter'></div>"
+  );
+  let img = $("<img src = '" + hero.img + "'></img>");
+  let firstName = $("<h1 style='color:" + hero.color + "'></h1>")
+    .append("Identity = " + hero.first)
+    .append(" " + hero.last);
+  let heroName = $("<span style='color:grey'></span>").append(
+    "Hero = " + hero.name
+  );
+  let heroDesc = $("<p style='color: white'></p>").append(hero.description);
+  let button = $("<button class = 'button is-dark'>Edit</button>");
+  returnHTML
+    .append(img)
+    .append(firstName)
+    .append(heroName)
+    .append(heroDesc)
+    .append(button);
   return returnHTML;
 };
 
