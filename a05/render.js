@@ -122,7 +122,7 @@ export const renderHeroEditForm = function (hero) {
       )
     );
   let $save = $("<div class = 'field'></div>")
-    .append($('<div class = "control"></div>'))
+    .append($('<div class = "control conSave"></div>'))
     .append(
       $(
         "<button class='button save' type = 'submit' data-id = '" +
@@ -131,7 +131,7 @@ export const renderHeroEditForm = function (hero) {
       )
     );
   let $cancel = $("<div class = 'field'></div>")
-    .append($('<div class = "control"></div>'))
+    .append($('<div class = "control conCancel"></div>'))
     .append(
       $(
         "<button class='button cancel' type = 'button' data-id = '" +
@@ -162,6 +162,7 @@ export const handleEditButtonPress = function (event) {
   let heroEditRemove = findHeroDiv(heroEdit.id);
   $(heroEditRemove).remove();
   $("#root").append(renderHeroEditForm(heroEdit));
+  return true;
 };
 
 /**
@@ -175,8 +176,7 @@ export const handleCancelButtonPress = function (event) {
   let heroEdit = findHero(event.target.dataset.id);
   let heroFormRemove = findHeroForm(heroEdit.id);
   $(heroFormRemove).remove();
-  $("div.section").remove();
-  loadHeroesIntoDOM(heroicData);
+  insertBack(heroEdit);
   return true;
 };
 
@@ -199,8 +199,7 @@ export const handleEditFormSubmit = function (event) {
   heroEdit["firstSeen"] = new Date(fSeen[1], fSeen[0]);
   let heroFormRemove = findHeroForm(heroEdit.id);
   $(heroFormRemove).remove();
-  $("div.section").remove();
-  loadHeroesIntoDOM(heroicData);
+  insertBack(findHero(heroEdit.id));
   return true;
 };
 
@@ -210,46 +209,45 @@ export const handleEditFormSubmit = function (event) {
  * @param  heroes  An array of hero objects to load (see data.js)
  */
 export const loadHeroesIntoDOM = function (heroes) {
-  let firstClickDone = true;
+  let firstClick = true;
   // Grab a jQuery reference to the root HTML element
-  //const $root = $("#root");
+  const $root = $("#root");
 
   // TODO: Generate the heroes using renderHeroCard()
   //       NOTE: Copy your code from a04 for this part
+  let loadedHeroes = loadAllHeroes(heroes);
   // TODO: Append the hero cards to the $root element
   //       NOTE: Copy your code from a04 for this part
-  $div1.append(loadAllHeroes(heroes));
-  $div1.append(loadAllHeroes(heroes));
+  $root.append(loadedHeroes);
   // TODO: Use jQuery to add handleEditButtonPress() as an event handler for
   //       clicking the edit button
-  $(".edit").on("click", function (e) {
-    if (firstClickDone) {
-      firstClickDone = false;
+  $root.on("click", ".edit", function (e) {
+    if (firstClick) {
+      firstClick = false;
       handleEditButtonPress(e);
-      // TODO: Use jQuery to add handleEditFormSubmit() as an event handler for
-      //       submitting the form
-      $(".save").on("click", function (e1) {
-        e1.preventDefault();
-        handleEditFormSubmit(e1);
-        firstClickDone = true;
-      });
-      // TODO: Use jQuery to add handleCancelButtonPress() as an event handler for
-      //       clicking the cancel button
-      $(".cancel").on("click", function (e2) {
-        handleCancelButtonPress(e2);
-        firstClickDone = true;
-      });
     }
+    firstClick = true;
+  });
+  // TODO: Use jQuery to add handleEditFormSubmit() as an event handler for
+  //       submitting the form
+  $root.on("click", ".save", function (e) {
+    e.preventDefault();
+    handleEditFormSubmit(e);
+  });
+  // TODO: Use jQuery to add handleCancelButtonPress() as an event handler for
+  //       clicking the cancel button
+  $root.on("click", ".cancel", function (e) {
+    handleCancelButtonPress(e);
   });
 };
 
 export const loadAllHeroes = function (heroes) {
-  let $div1 = $("<div class = 'section'></div>").appendTo($("#root"));
-  let $col = $("<div class='columns is-multiline'></div>");
+  let $div1 = $("<div class = 'section'></div>");
+  let $col = $("<div class='columns is-multiline'></div>").appendTo($div1);
   for (let i = 0; i < heroes.length; i++) {
     $col.append(renderHeroCard(heroes[i]));
   }
-  return $col;
+  return $div1;
 };
 
 export const findHero = function (id) {
@@ -272,6 +270,26 @@ export const findHeroForm = function (id) {
   return $("form").filter(function () {
     return $(this).data("id") === id;
   })[0];
+};
+
+export const findNextHero = function (id) {
+  for (let i = 0; i < heroicData.length - 1; i++) {
+    if (heroicData[i].id == id) {
+      return heroicData[i + 1];
+    }
+  }
+  return false;
+};
+
+export const insertBack = function (heroEdit) {
+  let nextHero = findNextHero(heroEdit.id);
+  if (nextHero == false) {
+    $(".columns").append(renderHeroCard(heroEdit));
+  } else {
+    let nextHeroDiv = findHeroDiv(nextHero.id);
+    renderHeroCard(heroEdit).insertBefore(nextHeroDiv);
+    return true;
+  }
 };
 /**
  * Use jQuery to execute the loadHeroesIntoDOM function after the page loads
