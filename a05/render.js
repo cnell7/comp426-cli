@@ -175,7 +175,8 @@ export const handleCancelButtonPress = function (event) {
   let heroEdit = findHero(event.target.dataset.id);
   let heroFormRemove = findHeroForm(heroEdit.id);
   $(heroFormRemove).remove();
-  $(".columns").append(renderHeroCard(heroEdit));
+  $("div.section").remove();
+  loadHeroesIntoDOM(heroicData);
   return true;
 };
 
@@ -198,7 +199,8 @@ export const handleEditFormSubmit = function (event) {
   heroEdit["firstSeen"] = new Date(fSeen[1], fSeen[0]);
   let heroFormRemove = findHeroForm(heroEdit.id);
   $(heroFormRemove).remove();
-  $(".columns").append(renderHeroCard(findHero(event.target.dataset.id)));
+  $("div.section").remove();
+  loadHeroesIntoDOM(heroicData);
   return true;
 };
 
@@ -210,13 +212,13 @@ export const handleEditFormSubmit = function (event) {
 export const loadHeroesIntoDOM = function (heroes) {
   let firstClickDone = true;
   // Grab a jQuery reference to the root HTML element
-  const $root = $("#root");
+  //const $root = $("#root");
 
   // TODO: Generate the heroes using renderHeroCard()
   //       NOTE: Copy your code from a04 for this part
-  let $div1 = $("<div class = 'section'></div>").appendTo($root);
   // TODO: Append the hero cards to the $root element
   //       NOTE: Copy your code from a04 for this part
+  $div1.append(loadAllHeroes(heroes));
   $div1.append(loadAllHeroes(heroes));
   // TODO: Use jQuery to add handleEditButtonPress() as an event handler for
   //       clicking the edit button
@@ -242,6 +244,7 @@ export const loadHeroesIntoDOM = function (heroes) {
 };
 
 export const loadAllHeroes = function (heroes) {
+  let $div1 = $("<div class = 'section'></div>").appendTo($("#root"));
   let $col = $("<div class='columns is-multiline'></div>");
   for (let i = 0; i < heroes.length; i++) {
     $col.append(renderHeroCard(heroes[i]));
