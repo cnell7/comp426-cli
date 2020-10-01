@@ -1,7 +1,7 @@
 /**
  * Course: COMP 426
  * Assignment: a05
- * Author: <type your name here>
+ * Author: <Christian Nell>
  *
  * This script uses jQuery to build an HTML page with content taken from the
  * data defined in data.js.
