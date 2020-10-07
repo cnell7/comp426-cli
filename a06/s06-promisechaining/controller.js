@@ -3,7 +3,6 @@
  * Promise chaining solution to the maze
  */
 
-
 /**
  * Runs when the page loads
  */
@@ -15,12 +14,21 @@ document.body.onload = async function () {
   const token = new Token(maze);
 
   // Attach the maze to the dom
-  document.getElementById('root').appendChild(maze.dom);
+  document.getElementById("root").appendChild(maze.dom);
 
   // TODO: Write code to solve the maze here
   //  \/ \/ \/ \/ \/
-
-
+  token
+    .moveAsync("north")
+    .then(function () {
+      return token.moveAsync("east");
+    })
+    .then(function () {
+      return token.moveAsync("east");
+    })
+    .then(function () {
+      return token.moveAsync("north");
+    });
 
   //  /\ /\ /\ /\ /\
-}
+};
