@@ -1,6 +1,5 @@
 import { heroData } from "./data";
 
-
 /**
  * This function searches an array of heroes to find one with a particular id.
  *   By itself, this is an easy task. However, we're going to pretend that the
@@ -28,12 +27,16 @@ export function getHeroByIdCallback(heroData, id, callback) {
 
   // 3. After 1.5 seconds, execute the callback() function, passing in the hero
   //    with the correct id as a parameter to the function.
+  heroData = heroData.filter((hero) => {
+    return hero.id == id;
+  });
+  setTimeout(() => {
+    callback(heroData[0]);
+  }, 1500);
 }
 
-
 // Uncomment this code to locally run your getHeroByIdCallback() function
-/*
+
 getHeroByIdCallback(heroData, 2, (hero) => {
-    console.log(`Found the hero with id ${hero.id}`, hero);
+  console.log(`Found the hero with id ${hero.id}`, hero);
 });
-*/

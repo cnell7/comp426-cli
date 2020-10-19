@@ -1,6 +1,5 @@
 import { heroData } from "./data";
-
-
+let k = require("./2_promises.js");
 /**
  * Again, this function does the same thing as getHeroByIdCallback() and
  *   getHeroByIdPromise(). However, this time it supports async/await.
@@ -19,15 +18,25 @@ import { heroData } from "./data";
  */
 export function getHeroByIdAsync(heroData, id) {
   // Copy-and-paste code here
+  return makeTheCall(heroData, id);
 }
 
+async function makeTheCall(heroData, id) {
+  const result = await k.getHeroByIdPromise(heroData, id);
+  return result;
+}
 
 // Uncomment this code to locally run your getHeroByIdCallback() function
-/*
+
 async function run() {
   const hero2 = await getHeroByIdAsync(heroData, 2);
-  console.log(`Because we are awaiting, this will run after the hero2 promise finishes: ${JSON.stringify(hero2, null, 2)}`);
-
+  console.log(
+    `Because we are awaiting, this will run after the hero2 promise finishes: ${JSON.stringify(
+      hero2,
+      null,
+      2
+    )}`
+  );
   try {
     const heroError = await getHeroByIdAsync(heroData, 20);
   } catch (error) {
@@ -35,11 +44,3 @@ async function run() {
   }
 }
 run();
-*/
-
-
-
-
-
-
-
