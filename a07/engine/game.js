@@ -36,27 +36,33 @@ export default class Game {
     move(direction){
         switch(direction){
             case 'up':
-                this.handleUp();
+                this.handleMove(0,1);
+                this.addRandom();
                 break;
             case 'down':
-                this.handleDown();
+                this.handleMove(0,-1);
+                this.addRandom();
                 break;
             case 'left':
-                this.handleLeft();
+                this.handleMove(-1,0);
+                this.addRandom();
                 break;
             case 'right':
-                this.handleRight();
+                this.handleMove(1,0);
+                this.addRandom();
                 break;
             default:
                 return null;
         }
+        console.log(this.toString());
+        return true;
     }
     toString(){
-        let returnString = "hi";
+        let returnString = "";
         for(let i = 0; i < Math.pow(this.length, 2); i++){
-            returnString.concat(this.board[i]);
-            if( ((i+1) % this.length) == 0 ){
-                returnString.concat("\n");
+            returnString += " [" + this.board[i] + "]";
+            if( (i + 1) % this.length == 0){
+                returnString += "\n";
             }
         }
         return returnString;
@@ -88,41 +94,91 @@ export default class Game {
         }
         return 2;
     }
-    handleUp(){
-        let short = this.makeNewUpDownBoard();
-    }
-    handleDown(){
-
-    }
-    handleLeft(){
-
-    }
-    handleRight(){
-
-    }
-    makeNewLeftRightBoard(){
-        let temp = this.board;
-        let newBoard = []
-        let row = []
-        for(let i = 0; i < Math.pow(this.length, 2); i++){
-            row.push(temp[i]);
-            if( (i % this.legnth) == 0){
-                newBoard.push(row);
-                row = [];
-            }
-        }
-        return newBoard;
-    }
-    makeNewUpDownBoard(){
-        let temp = this.board;
+    handleMove(x,y){
+        let copy = this.board;
         let newBoard = [];
-        for(let i = 0; i < this.length; i++){
-            let col = [temp[i]]
-            for(let j = i + this.length; j < Math.pow(this.length, 2); j += this.length){
-                col.push(temp[j])
+        let count = 0;
+        let count2 = 0;
+        if(x == -1){
+            while(count < Math.pow(this.length, 2)){
+                let a = copy.slice(count, count + this.length);
+                for (let k of this.calcValues(a)){newBoard.push(k);}
+                count += this.length;
             }
-            newBoard.push(col);
+        } else if (x == 1){
+            while(count < Math.pow(this.length, 2)){
+                let a = copy.slice(count, count + this.length);
+                a.reverse();
+                for (let k of this.calcValues(a).reverse()){newBoard.push(k);}
+                count += this.length;
+            }
+        } else if (y == -1){
+            let temp = [];
+            for(let i = 0; i < this.length; i++){
+                let a = [];
+                for(let j = 0; j < this.length; j++){
+                    a.push(this.get(i,j));
+                }
+                temp.push(this.calcValues(a));
+            }
+            for(let i = this.length - 1; i >= 0; i--){
+                for(let j = 0; j < this.length; j++){
+                    newBoard.push(temp[j][i]);
+                }
+            }
+        } else if (y == 1){
+            let temp = [];
+            for(let i = 0; i < this.length; i++){
+                let a = [];
+                for(let j = 0; j < this.length; j++){
+                    a.push(this.get(i,j));
+                }
+                temp.push(this.calcValues(a));
+            }
+            for(let i = 0; i < this.length; i++){
+                for(let j = 0; j < this.length; j++){
+                    newBoard.push(temp[j][i]);
+                }
+            }
         }
-        return newBoard;
+        this.board = newBoard;
+        return true;
+    }
+    calcValues(arr){
+        let addZero = 0;
+        arr = arr.filter((num)=>{return num > 0;})
+        if(arr.length != 0){
+            for(let i = 0; i < arr.length - 1; i++){
+                if(arr[i] == arr[i+1]){
+                    arr[i] *= 2;
+                    delete arr[i+1];
+                }
+            }
+        }
+        arr = arr.filter((num)=> {return num != undefined;})
+        addZero = this.length - arr.length;
+        for(let i = 0; i < addZero; i++){
+            arr.push(0);
+        }
+        return arr;
+    }
+    addRandom(){
+        let temp = parseInt(Math.random() * (Math.pow(this.length, 2) - 1));
+        if(this.board[temp] == 0){
+            this.board[temp] = this.getRandom();
+        }
+        return true;
+    }
+    get(x,y){
+        return this.board[x + this.length * y];
+    }
+    set(x,y,val){
+        this.board[x+this.width*y] = val;
+    }
+    getIndex(x,y){
+        return x + this.length * y;
+    }
+    getXY(index){
+        return {x: index % this.length, y: index/this.length};
     }
 }
