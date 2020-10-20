@@ -6,7 +6,7 @@ export default class Game {
         this.score = 0;
         this.won = false;
         this.over = false;
-        this.setupNewGame()
+        this.setupNewGame();
     }
     setupNewGame(){
         let count = 0;
@@ -34,10 +34,32 @@ export default class Game {
         this.over = gameState.over;
     }
     move(direction){
-
+        switch(direction){
+            case 'up':
+                this.handleUp();
+                break;
+            case 'down':
+                this.handleDown();
+                break;
+            case 'left':
+                this.handleLeft();
+                break;
+            case 'right':
+                this.handleRight();
+                break;
+            default:
+                return null;
+        }
     }
     toString(){
-        return this.board;
+        let returnString = "hi";
+        for(let i = 0; i < Math.pow(this.length, 2); i++){
+            returnString.concat(this.board[i]);
+            if( ((i+1) % this.length) == 0 ){
+                returnString.concat("\n");
+            }
+        }
+        return returnString;
     }
     onMove(callback){
 
@@ -49,7 +71,12 @@ export default class Game {
 
     }
     getGameState(){
-        
+        return {
+            board: this.board,
+            score: this.score,
+            won: this.won,
+            over: this.over
+          }
     }
 
     /*
@@ -60,5 +87,42 @@ export default class Game {
             return 4;
         }
         return 2;
+    }
+    handleUp(){
+        let short = this.makeNewUpDownBoard();
+    }
+    handleDown(){
+
+    }
+    handleLeft(){
+
+    }
+    handleRight(){
+
+    }
+    makeNewLeftRightBoard(){
+        let temp = this.board;
+        let newBoard = []
+        let row = []
+        for(let i = 0; i < Math.pow(this.length, 2); i++){
+            row.push(temp[i]);
+            if( (i % this.legnth) == 0){
+                newBoard.push(row);
+                row = [];
+            }
+        }
+        return newBoard;
+    }
+    makeNewUpDownBoard(){
+        let temp = this.board;
+        let newBoard = [];
+        for(let i = 0; i < this.length; i++){
+            let col = [temp[i]]
+            for(let j = i + this.length; j < Math.pow(this.length, 2); j += this.length){
+                col.push(temp[j])
+            }
+            newBoard.push(col);
+        }
+        return newBoard;
     }
 }
