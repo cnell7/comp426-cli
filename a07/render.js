@@ -26,7 +26,12 @@ const load = (game) => {
     $tableHolder.append($table);
     $tableHolder.append("</div>");
     $root.append($tableHolder);
-    $root.append("<div id='belowTable'><p>Score: "+game.score+"</p></div>")
+    $root.append("<div id='belowTable'><p>Score: "+game.score+"</p>")
+    $root.append("<button class='button reset'>Reset</button></div>");
+}
+const reset = () =>{
+    load(new Game(4));
+    return true;
 }
 const firstLoad = (game) => {
     load(game);
@@ -37,6 +42,7 @@ const firstLoad = (game) => {
         load(game);
         if(game.over == true){
             $root.append("<div id='belowTable'><p>");
+            $root.append("<p>Game Over</p>");
             if(game.won){
                 $root.append("Won!</p></div>");
             } else {
@@ -44,6 +50,11 @@ const firstLoad = (game) => {
             }
         }
     }
+    $root.on("click", ".reset", function (e) {
+        $root.empty();
+        console.log("hi")
+        reset();
+    })
 }
 $(function () {
     firstLoad(new Game(4));
