@@ -119,7 +119,8 @@ export default class Game {
                 for(let j = 0; j < this.length; j++){
                     a.push(this.get(i,j));
                 }
-                temp.push(this.calcValues(a));
+                let k = a.reverse();
+                temp.push(this.calcValues(k));
             }
             for(let i = this.length - 1; i >= 0; i--){
                 for(let j = 0; j < this.length; j++){
