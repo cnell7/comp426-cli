@@ -41,7 +41,6 @@ export default class Game {
             this.handleLoss();
             return false;
         }
-        console.log(direction)
         switch(direction){
             case 'up':
                 this.handleMove(0,1);
@@ -156,21 +155,17 @@ export default class Game {
                 }
             }
         }
-        console.log("here 1")
         let c = 0;
         let isDone = false;
         while(c <  Math.pow(this.length, 2) && !isDone){
             if(checkSameState[c] != newBoard[c]){
                 this.board = newBoard;
-                console.log(this.toString())
                 this.addRandom();
-                console.log("here middle")
                 this.onMoveCall.map( fn=>{fn(this.getGameState());})
                 isDone = true;
             }
             c++;
         }
-        console.log("here 2")
         return true;
     }
     calcValues(arr){
@@ -206,32 +201,26 @@ export default class Game {
         let tempID = 0;
         for(let i = 0; i < Math.pow(this.length, 2); i++){
             tempID = this.getXY(i);
-            console.log(this.board[i])
-            console.log(tempID['x'] + " " + tempID['y'] + " " + this.get(tempID['x'], tempID['y']) + " " + i);
             if(this.board[i] == 0){
                 return false
             }
             if((tempID['x'] + 1) < this.length - 1){
                 if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'] + 1, tempID['y'])){
-                    console.log("cut 1" + " " + this.get(tempID['x'] + 1, tempID['y']));
                     return false;
                 }
             }
             if((tempID['x'] - 1) > 0){
                 if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'] - 1, tempID['y'])){
-                    console.log("cut 2" + " " + this.get(tempID['x'] - 1, tempID['y']));
                     return false;
                 }
             }
             if((tempID['y'] - 1) > 0){
                 if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'], tempID['y'] - 1)){
-                    console.log("cut 3" + " " + this.get(tempID['x'], tempID['y'] - 1));
                     return false;
                 }
             }
             if((tempID['y'] + 1) < this.length - 1){
                 if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'], tempID['y'] + 1)){
-                    console.log("cut 4" + " " + this.get(tempID['x'], tempID['y'] + 1));
                     return false;
                 }
             }
