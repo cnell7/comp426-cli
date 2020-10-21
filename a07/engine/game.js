@@ -40,26 +40,19 @@ export default class Game {
         switch(direction){
             case 'up':
                 this.handleMove(0,1);
-                this.addRandom();
                 break;
             case 'down':
                 this.handleMove(0,-1);
-                this.addRandom();
                 break;
             case 'left':
                 this.handleMove(-1,0);
-                this.addRandom();
                 break;
             case 'right':
                 this.handleMove(1,0);
-                this.addRandom();
                 break;
             default:
                 return null;
         }
-        this.onMoveCall.map( fn=>{
-            fn(this.getGameState());
-        })
         return true;
     }
     toString(){
@@ -106,6 +99,7 @@ export default class Game {
         let copy = this.board;
         let newBoard = [];
         let count = 0;
+        let checkSameState = {...this.board};
         if(x == -1){
             while(count < Math.pow(this.length, 2)){
                 let a = copy.slice(count, count + this.length);
@@ -149,8 +143,19 @@ export default class Game {
                 }
             }
         }
-        this.board = newBoard;
-        this.checkNoMoves();
+        if(this.checkNoMoves()){
+            return false
+        }
+        for(let i = 0; i < Math.pow(this.length, 2); i++){
+            if(checkSameState[i] != newBoard[i]){
+                this.board = newBoard;
+                this.addRandom();
+                this.onMoveCall.map( fn=>{
+                    fn(this.getGameState());
+                })
+                break;
+            }
+        }
         return true;
     }
     calcValues(arr){
@@ -195,8 +200,9 @@ export default class Game {
         }
         if(hasNoMoves){
             this.handleLoss();
+            return true
         }
-        return true;
+        return false;
     }
     handleLoss(){
         this.over = true;
