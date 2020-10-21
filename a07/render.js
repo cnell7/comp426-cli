@@ -8,6 +8,7 @@ let keyPress = {
 const load = (game) => {
     let board = game.board;
     const $root = $("#root");
+    $root.append("<div><p>The rules are also simple. You just need to move the tiles and every time you move one, another tile pops up in a random manner anywhere in the box. When two tiles with the same number on them collide with one another as you move them, they will merge into one tile with the sum of the numbers written on them initially.</p></div>")
     let $tableHolder = $("<div class='container'>");
     let $table = $("<table class='table' id='t'></table>");
     $table.append("<tbody>");
@@ -30,8 +31,9 @@ const load = (game) => {
     $root.append("<button class='button reset'>Reset</button></div>");
 }
 const reset = () =>{
-    load(new Game(4));
-    return true;
+    let temp = new Game(4)
+    load(temp);
+    return temp;
 }
 const firstLoad = (game) => {
     load(game);
@@ -52,8 +54,7 @@ const firstLoad = (game) => {
     }
     $root.on("click", ".reset", function (e) {
         $root.empty();
-        console.log("hi")
-        reset();
+        game = reset();
     })
 }
 $(function () {
