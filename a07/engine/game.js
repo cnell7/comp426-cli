@@ -58,10 +58,7 @@ export default class Game {
                 return null;
         }
         this.onMoveCall.map( fn=>{
-            fn({board: this.board,
-                score: this.score,
-                won: this.won,
-                over: this.over});
+            fn(this.getGameState());
         })
         return true;
     }
@@ -164,6 +161,7 @@ export default class Game {
                 if(arr[i] == arr[i+1]){
                     arr[i] *= 2;
                     delete arr[i+1];
+                    this.score += arr[i];
                 }
             }
         }
@@ -191,16 +189,22 @@ export default class Game {
             if(this.board[i] == 0){
                 hasNoMoves = false;
             }
+            if(this.board[i] == 2048){
+                this.handleWin();
+            }
         }
         if(hasNoMoves){
-            this.onLoseCall.forEach((fn)=>{fn({
-                board: this.board,
-                score: this.score,
-                won: this.won,
-                over: this.over
-              })})
+            this.handleLoss();
         }
         return true;
+    }
+    handleLoss(){
+        this.over = true;
+        this.onLoseCall.forEach((fn)=>{fn(this.getGameState())})
+    }
+    handleWin(){
+        this.won = true;
+        this.onWinCall.forEach((fn)=>{fn(this.getGameState())})
     }
     get(x,y){
         return this.board[x + this.length * y];
