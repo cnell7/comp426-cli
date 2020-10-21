@@ -37,6 +37,11 @@ export default class Game {
         this.over = gameState.over;
     }
     move(direction){
+        if(this.checkNoMoves()){
+            this.handleLoss();
+            return false;
+        }
+        console.log(direction)
         switch(direction){
             case 'up':
                 this.handleMove(0,1);
@@ -52,6 +57,14 @@ export default class Game {
                 break;
             default:
                 return null;
+        }
+        if(this.checkNoMoves()){
+            this.handleLoss();
+            return false;
+        }
+        if(this.checkGameOver()){
+            this.handleWin();
+            return true;
         }
         return true;
     }
@@ -143,19 +156,21 @@ export default class Game {
                 }
             }
         }
-        if(this.checkNoMoves()){
-            return false
-        }
-        for(let i = 0; i < Math.pow(this.length, 2); i++){
-            if(checkSameState[i] != newBoard[i]){
+        console.log("here 1")
+        let c = 0;
+        let isDone = false;
+        while(c <  Math.pow(this.length, 2) && !isDone){
+            if(checkSameState[c] != newBoard[c]){
                 this.board = newBoard;
+                console.log(this.toString())
                 this.addRandom();
-                this.onMoveCall.map( fn=>{
-                    fn(this.getGameState());
-                })
-                break;
+                console.log("here middle")
+                this.onMoveCall.map( fn=>{fn(this.getGameState());})
+                isDone = true;
             }
+            c++;
         }
+        console.log("here 2")
         return true;
     }
     calcValues(arr){
@@ -178,29 +193,59 @@ export default class Game {
         return arr;
     }
     addRandom(){
-        let k = true
-        while(k){
-            let temp = parseInt(Math.random() * (Math.pow(this.length, 2) - 1));
-            if(this.board[temp] == 0){
-                this.board[temp] = this.getRandom();
-                k = false;
+        let goodIndexs = []
+        for(let i = 0; i < Math.pow(this.length, 2); i++){
+            if(this.board[i] == 0){
+                goodIndexs.push(i);
             }
         }
+        this.board[goodIndexs[parseInt(Math.random() * goodIndexs.length)]] = this.getRandom();
         return true;
     }
     checkNoMoves(){
-        let hasNoMoves = true;
+        let tempID = 0;
         for(let i = 0; i < Math.pow(this.length, 2); i++){
+            tempID = this.getXY(i);
+            console.log(this.board[i])
+            console.log(tempID['x'] + " " + tempID['y'] + " " + this.get(tempID['x'], tempID['y']) + " " + i);
             if(this.board[i] == 0){
-                hasNoMoves = false;
+                return false
+            }
+            if((tempID['x'] + 1) < this.length - 1){
+                if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'] + 1, tempID['y'])){
+                    console.log("cut 1" + " " + this.get(tempID['x'] + 1, tempID['y']));
+                    return false;
+                }
+            }
+            if((tempID['x'] - 1) > 0){
+                if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'] - 1, tempID['y'])){
+                    console.log("cut 2" + " " + this.get(tempID['x'] - 1, tempID['y']));
+                    return false;
+                }
+            }
+            if((tempID['y'] - 1) > 0){
+                if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'], tempID['y'] - 1)){
+                    console.log("cut 3" + " " + this.get(tempID['x'], tempID['y'] - 1));
+                    return false;
+                }
+            }
+            if((tempID['y'] + 1) < this.length - 1){
+                if(this.get(tempID['x'], tempID['y']) == this.get(tempID['x'], tempID['y'] + 1)){
+                    console.log("cut 4" + " " + this.get(tempID['x'], tempID['y'] + 1));
+                    return false;
+                }
             }
             if(this.board[i] == 2048){
                 this.handleWin();
             }
         }
-        if(hasNoMoves){
-            this.handleLoss();
-            return true
+        return true;
+    }
+    checkGameOver(){
+        for(let i = 0; i < Math.pow(this.length, 2); i++){
+            if(this.board[i] == 2048){
+                return true;
+            }
         }
         return false;
     }
@@ -210,18 +255,19 @@ export default class Game {
     }
     handleWin(){
         this.won = true;
+        this.over = true;
         this.onWinCall.forEach((fn)=>{fn(this.getGameState())})
     }
     get(x,y){
-        return this.board[x + this.length * y];
+        return this.board[x + (this.length) * y];
     }
     set(x,y,val){
-        this.board[x+this.width*y] = val;
+        this.board[x+this.length*y] = val;
     }
     getIndex(x,y){
         return x + this.length * y;
     }
     getXY(index){
-        return {x: index % this.length, y: index/this.length};
+        return {x: index % this.length, y: Math.floor(index/this.length)};
     }
 }
