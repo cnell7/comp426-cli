@@ -6,6 +6,9 @@ export default class Game {
         this.score = 0;
         this.won = false;
         this.over = false;
+        this.onMoveCall = [];
+        this.onWinCall = [];
+        this.onLoseCall = [];
         this.setupNewGame();
     }
     setupNewGame(){
@@ -54,7 +57,12 @@ export default class Game {
             default:
                 return null;
         }
-        console.log(this.toString());
+        this.onMoveCall.map( fn=>{
+            fn({board: this.board,
+                score: this.score,
+                won: this.won,
+                over: this.over});
+        })
         return true;
     }
     toString(){
@@ -68,13 +76,16 @@ export default class Game {
         return returnString;
     }
     onMove(callback){
-
+        this.onMoveCall.push(callback);
+        return true;
     }
     onWin(callback){
-
+        this.onWinCall.push(callback);
+        return true;
     }
     onLose(callback){
-
+        this.onLoseCall.push(callback);
+        return true;
     }
     getGameState(){
         return {
@@ -98,7 +109,6 @@ export default class Game {
         let copy = this.board;
         let newBoard = [];
         let count = 0;
-        let count2 = 0;
         if(x == -1){
             while(count < Math.pow(this.length, 2)){
                 let a = copy.slice(count, count + this.length);
@@ -143,6 +153,7 @@ export default class Game {
             }
         }
         this.board = newBoard;
+        this.checkNoMoves();
         return true;
     }
     calcValues(arr){
@@ -164,9 +175,30 @@ export default class Game {
         return arr;
     }
     addRandom(){
-        let temp = parseInt(Math.random() * (Math.pow(this.length, 2) - 1));
-        if(this.board[temp] == 0){
-            this.board[temp] = this.getRandom();
+        let k = true
+        while(k){
+            let temp = parseInt(Math.random() * (Math.pow(this.length, 2) - 1));
+            if(this.board[temp] == 0){
+                this.board[temp] = this.getRandom();
+                k = false;
+            }
+        }
+        return true;
+    }
+    checkNoMoves(){
+        let hasNoMoves = true;
+        for(let i = 0; i < Math.pow(this.length, 2); i++){
+            if(this.board[i] == 0){
+                hasNoMoves = false;
+            }
+        }
+        if(hasNoMoves){
+            this.onLoseCall.forEach((fn)=>{fn({
+                board: this.board,
+                score: this.score,
+                won: this.won,
+                over: this.over
+              })})
         }
         return true;
     }
