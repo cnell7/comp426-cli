@@ -163,5 +163,5 @@ export async function fn6() {
         method: 'get',
         url: 'https://comp426-1fa20.cs.unc.edu/a08/headers',
     })
-    return result.headers.my-custom-response-header;
+    return result.headers['my-custom-response-header'];
 };
