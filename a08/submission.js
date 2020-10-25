@@ -136,7 +136,8 @@ export async function fn4() {
 export async function fn5() {
     return await axios({
         method: 'put',
-        url: 'https://comp426-1fa20.cs.unc.edu/a08/headers'
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/headers',
+        headers: {"my-custom-request-header": "Hello, World!"}
     })
 };
 
@@ -158,5 +159,9 @@ export async function fn5() {
  *   "my-custom-response-header"
  */
 export async function fn6() {
-  
+    const result = await axios({
+        method: 'get',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/headers',
+    })
+    return result.headers.my-custom-response-header;
 };
