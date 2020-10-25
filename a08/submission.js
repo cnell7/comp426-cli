@@ -1,7 +1,7 @@
 /**
  * Course: COMP 426
  * Assignment: a08
- * Author: <type your name here>
+ * Author: Christian Nell
  *
  * This script uses axios to make simple HTTP requests to the COMP 426 server
  */
@@ -19,7 +19,11 @@
  * @returns  {Object}  The body of the HTTP response.
  */
 export async function fn1() {
-
+    const result = await axios({
+        method: 'get',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/heroes',
+    })
+    return result.data;
 };
 
 
@@ -39,7 +43,12 @@ export async function fn1() {
  * @returns  {Number}  The HTTP status code of the response.
  */
 export async function fn2() {
-
+    const result = await axios({
+        method: 'get',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/heroes',
+        params: {sort: 'first ASC'}
+    })
+    return result.status;
 };
 
 
@@ -70,7 +79,13 @@ export async function fn2() {
  * @returns  {Object}  The complete axios response object
  */
 export async function fn3() {
-  
+    return await axios({
+        method: 'post',
+        url: ' https://comp426-1fa20.cs.unc.edu/a08/users',
+        params: { first: 'Christian',
+                  last: 'Nell',
+                  onyen: 'cnell'}
+    })
 };
 
 
@@ -92,7 +107,16 @@ export async function fn3() {
  *                     request fails
  */
 export async function fn4() {
-  
+    try {
+        return await axios({
+            method: 'post',
+            url: 'https://comp426-1fa20.cs.unc.edu/a08/users',
+            params: { first: 'Christian',
+                      onyen: 'cnell'}
+        })
+    } catch (error) {
+        return error;
+    }
 };
 
 
@@ -110,7 +134,10 @@ export async function fn4() {
  * @returns  {Object}  The complete axios response object
  */
 export async function fn5() {
-  
+    return await axios({
+        method: 'put',
+        url: 'https://comp426-1fa20.cs.unc.edu/a08/headers'
+    })
 };
 
 
