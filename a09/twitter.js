@@ -121,7 +121,16 @@ async function likeTweet(id){
     refresh();
 }
 
-async function retweetTweet(id){
+function retweetTweet(id){
+    if($('#retweetInput').length == 0){
+        $('#'+id).append('<form><input id="retweetInput"></input><button id="submitRetweet">Submit</button></form>')
+        $('#root').on('click', "#submitRetweet", (e)=>{
+            e.preventDefault();
+            submitRetweet(id, $('#retweetInput').val());
+        })
+    }
+}
+async function submitRetweet(id, body){
     const result = await axios({
         method: 'post',
         url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets',
@@ -129,12 +138,11 @@ async function retweetTweet(id){
         data: {
           "type": "retweet",
           "parent": id,
-          "body": "retweet test"
+          "body": body
         },
     });
     refresh();
 }
-
 function replyHandler(e){
     console.log('reply');
 }
