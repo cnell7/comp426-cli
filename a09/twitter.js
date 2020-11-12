@@ -30,7 +30,7 @@ async function loadIndex() {
         });
         tweet = tweet.data;
         if(type == 'tweet'){
-            $indexAppend.append("<div id='"+tweet.id+"' class='message'><div class='message-header'><h1>"+tweet.author+"</h1></div><p>"+tweet.body+"</p><p id='likeCount'>"+tweet.likeCount +"  " + tweet.retweetCount+ "</p><button id='"+tweet.id+"'class='like button "+ checkIsMyLike(tweet) +"'>Like</button><button id='reply' class='button'>Reply</button><button id='"+element.id+"' class='retweet button'>Retweet</button>");
+            $indexAppend.append("<div id='"+tweet.id+"' class='message'><div class='message-header'><h1>"+tweet.author+"</h1></div><p class='tweetBody'>"+tweet.body+"</p><p id='likeCount'>"+tweet.likeCount +"  " + tweet.retweetCount+ "</p><button id='"+tweet.id+"'class='like button "+ checkIsMyLike(tweet) +"'>Like</button><button id='reply' class='button'>Reply</button><button id='"+element.id+"' class='retweet button'>Retweet</button>");
         }else if(type == 'retweet'){
             let $retweetAppend = $("<h1 class='title is-5'>"+tweet.author+" Retweeted</h1>");
             $retweetAppend.append("<h2>"+tweet.body+"</h2>");
@@ -153,12 +153,15 @@ async function submitRetweet(id, body){
     });
     refresh();
 }
-function editTweet(id){
-    $('<input id="editInput"></input><button id="editButton" class="button">Submit</button>').appendTo('#'+id);
-    $('#root').on("click", "#editButton", (e)=>{
-        e.preventDefault();
-        updateTweet(id, $('#editInput').val());
-    })
+async function editTweet(id){
+    let tweet = await readTweet(id);
+    if($('#editInput').length == 0){
+        $('<textarea id="editInput">'+tweet.data.body+'</textarea><button id="editButton" class="button">Submit</button>').appendTo('#'+id);
+        $('#root').on("click", "#editButton", (e)=>{
+            e.preventDefault();
+            updateTweet(id, $('#editInput').val());
+        })
+    }
 }
 function replyHandler(e){
     console.log('reply');
