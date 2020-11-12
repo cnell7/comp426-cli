@@ -27,6 +27,11 @@ async function loadIndex() {
         let ogTweet = tweet;
         if(type == 'tweet'){
             $indexAppend.append("<div id='"+tweet.id+"' class='message'><div class='message-header'><h1>"+tweet.author+"</h1></div><p class='tweetBody'>"+tweet.body+"</p><p id='likeCount'>"+tweet.likeCount +"  " + tweet.retweetCount+ "</p><button id='"+tweet.id+"'class='like button "+ checkIsMyLike(tweet) +"'>Like</button><button id='"+tweet.id+"' class='reply button'>Reply</button><button id='"+data[counter].id+"' class='retweet button'>Retweet</button>");
+            if(tweet.replies){
+                tweet.replies.forEach(element =>{
+                    $('#'+tweet.id).append("<div class='container'><h1 id='replyTitle'><strong>"+element.author+"</strong></h1><p>"+element.body+"</p>")
+                })
+            }
         }else if(type == 'retweet'){
             let $retweetAppend = $("<h1 class='retweetTitle title is-5'>"+tweet.author+" Retweeted</h1>");
             $retweetAppend.append("<h2>"+tweet.body+"</h2>");
@@ -87,25 +92,31 @@ async function updateTweet(id, body){
 }
 
 async function createHandler(e){
-    $('#createForm').remove();
-    let $createBody = $('#tweets').prepend("<div id='createForm' class='field-body'><div class='field'><div class='control'><textarea id='createTextInput' class='textarea' placeholder='Insert tweet here'></textarea></div></div></div>");
-    $('#createForm').append("<div class='field is-horizontal'><div class='field-label'></div><div class='field-body'><div class='field'><div class='control'><button id='createInput' class='button is-primary'>Send message</button></div></div></div>");
-    $('#createInput').on("click", async function(e){
-        try{
-            const result = await axios({
-                method: 'post',
-                url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets',
-                withCredentials: true,
-                data: {
-                  body: $('#createTextInput').val()
-                },
-              });
-            refresh();
-            return result;
-        } catch(error){
-            return error;
-        }    
-    });
+    if($('#createForm').length == 0){
+        $("<div class='submit-create field'><div class='control'><button id='createInput' class='button is-primary mr-2'>Send message</button><button id='cancelCreate' class='button is-light'>Cancel</button></div></div>").prependTo('#tweets');
+        $("<div id='createForm' class='field-body mb-2'><div class='field'><div class='control'><textarea id='createTextInput' class='textarea' placeholder='Insert tweet here'></textarea></div></div></div>").prependTo('#tweets');
+        $('#createInput').on("click", async function(e){
+            try{
+                const result = await axios({
+                    method: 'post',
+                    url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets',
+                    withCredentials: true,
+                    data: {
+                        body: $('#createTextInput').val()
+                    },
+                    });
+                refresh();
+                return result;
+            } catch(error){
+                return error;
+            }    
+        });
+        $('#cancelCreate').on("click", ()=>{
+            $('#createForm').remove();
+            $('.submit-create').remove();
+
+        })
+    }
 }
 
 async function fetchTweet(id){
