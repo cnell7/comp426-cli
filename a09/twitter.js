@@ -1,6 +1,6 @@
 $( document ).ready(function() {
     let $root = $('#root');
-    $root.append("<button id='createTweet' class='button'>Create</button>");
+    $root.append("<div class='container'><div class='level mt-2 mb-2'><h1 id='twitterTitle' class='title is-3 level-left'>Twitter</h1><button id='createTweet' class='level-right button is-primary'>Create</button></div>");
     $root.on("click", "#createTweet", function (e) {createHandler(e)});
     loadIndex();
     $root.on("click", ".like", function(e) {likeTweet(this.id)});;
