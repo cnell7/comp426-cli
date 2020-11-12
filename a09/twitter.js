@@ -6,6 +6,7 @@ $( document ).ready(async function() {
     $root.on("click", ".like", function(e) {likeTweet(this.id)});;
     $root.on("click", ".retweet", function (e) {retweetTweet(this.id);});
     $root.on("click", "#reply", function (e) {replyHandler(e);});
+    $root.on("click", ".editTweet", function (e) {editTweet(this.id)});
     return true;
 });
 
@@ -22,21 +23,15 @@ async function loadIndex() {
     let $indexAppend = $("<div id='tweets' class='container'>")
     data.map(async function(element){
         let type = element.type;
+        let tweet = await axios({
+            method: 'get',
+            url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets/'+element.id,
+            withCredentials: true,
+        });
+        tweet = tweet.data;
         if(type == 'tweet'){
-            let tweet = await axios({
-                method: 'get',
-                url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets/'+element.id,
-                withCredentials: true,
-            });
-            tweet = tweet.data;
             $indexAppend.append("<div id='"+tweet.id+"' class='message'><div class='message-header'><h1>"+tweet.author+"</h1></div><p>"+tweet.body+"</p><p id='likeCount'>"+tweet.likeCount +"  " + tweet.retweetCount+ "</p><button id='"+tweet.id+"'class='like button "+ checkIsMyLike(tweet) +"'>Like</button><button id='reply' class='button'>Reply</button><button id='"+element.id+"' class='retweet button'>Retweet</button>");
         }else if(type == 'retweet'){
-            let tweet = await axios({
-                method: 'get',
-                url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets/'+element.id,
-                withCredentials: true,
-            });
-            tweet = tweet.data;
             let $retweetAppend = $("<h1 class='title is-5'>"+tweet.author+" Retweeted</h1>");
             $retweetAppend.append("<h2>"+tweet.body+"</h2>");
             while(tweet.parent != null){
@@ -46,7 +41,10 @@ async function loadIndex() {
             $indexAppend.append($retweetAppend);
         }else if(type == 'reply'){
             
-       }
+        }
+        if(tweet.isMine){
+            $('#'+tweet.id).append("<button id='"+tweet.id+"' class='editTweet button'>Edit")
+        }
     });
     $root.append($indexAppend);
     return true;    
@@ -73,6 +71,18 @@ function getIndex() {
         } catch(error) {
             reject(error);
     }})
+}
+
+async function updateTweet(id, body){
+    const result = await axios({
+        method: 'put',
+        url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets/'+id,
+        withCredentials: true,
+        data: {
+            body: body
+        },
+    });
+    refresh();
 }
 
 async function createHandler(e){
@@ -142,6 +152,13 @@ async function submitRetweet(id, body){
         },
     });
     refresh();
+}
+function editTweet(id){
+    $('<input id="editInput"></input><button id="editButton" class="button">Submit</button>').appendTo('#'+id);
+    $('#root').on("click", "#editButton", (e)=>{
+        e.preventDefault();
+        updateTweet(id, $('#editInput').val());
+    })
 }
 function replyHandler(e){
     console.log('reply');
