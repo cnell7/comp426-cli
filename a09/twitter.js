@@ -7,6 +7,7 @@ $( document ).ready(function() {
     $root.on("click", ".retweet", function (e) {retweetTweet(this.id);});
     $root.on("click", ".reply", function (e) {replyHandler(this.id);});
     $root.on("click", ".editTweet", function (e) {editTweet(this.id)});
+    $root.on("click", ".deleteTweet", function(e){deleteTweet(this.id)})
     return true;
 });
 
@@ -17,11 +18,13 @@ async function loadIndex() {
     console.log(data)
     let $root = $('#root');
     let $indexAppend = $("<div id='tweets' class='container'>")
+    $root.append($indexAppend);
     let counter = 0;
     while(counter < data.length){
         let type = data[counter].type;
         let tweet = await readTweet(data[counter].id);
         tweet = tweet.data;
+        let ogTweet = tweet;
         if(type == 'tweet'){
             $indexAppend.append("<div id='"+tweet.id+"' class='message'><div class='message-header'><h1>"+tweet.author+"</h1></div><p class='tweetBody'>"+tweet.body+"</p><p id='likeCount'>"+tweet.likeCount +"  " + tweet.retweetCount+ "</p><button id='"+tweet.id+"'class='like button "+ checkIsMyLike(tweet) +"'>Like</button><button id='"+tweet.id+"' class='reply button'>Reply</button><button id='"+data[counter].id+"' class='retweet button'>Retweet</button>");
         }else if(type == 'retweet'){
@@ -38,15 +41,14 @@ async function loadIndex() {
             while(tweet.parent != null){
                 tweet = tweet.parent;
             }
-            $replyAppend.append("<div class='container'><div id='"+tweet.id+"' class='message'><div class='message-header'><h1>"+tweet.author+"</h1></div><p>"+tweet.body+"</p><p id='likeCount'>"+tweet.likeCount +"  " + tweet.retweetCount+ "</p><button id='"+tweet.id+"'class='like button "+ checkIsMyLike(tweet) +"'>Like</button><button id='"+tweet.id+"' class='reply button'>Reply</button><button id='"+data[counter].id+"' class='retweet button'>Retweet</button>");
+            $replyAppend.append("<div class='container'><div id='"+tweet.id+"' class='message'><div class='message-header'><h1>"+tweet.author+"</h1></div><p>"+tweet.body+"</p><p id='likeCount'>"+tweet.likeCount +"  " + tweet.retweetCount+ "</p><button id='"+tweet.id+"'class='like button "+ checkIsMyLike(tweet) +"'>Like</button><button id='"+tweet.id+"replyBut' class='reply button'>Reply</button><button id='"+data[counter].id+"' class='retweet button'>Retweet</button>");
             $indexAppend.append($replyAppend);
         }
-        if(tweet.isMine){
-            $('#'+tweet.id).append("<button id='"+tweet.id+"' class='editTweet button'>Edit")
+        if(ogTweet.isMine){
+            $('#'+tweet.id).append("<button id='"+ogTweet.id+"' class='editTweet button'>Edit</button><button id='"+ogTweet.id+"' class='deleteTweet button'>Delete</button>")
         }
         counter++;
     }
-    $root.append($indexAppend);
     return true;    
 }
 
@@ -170,7 +172,7 @@ async function submitRetweet(id, body){
 async function editTweet(id){
     let tweet = await readTweet(id);
     if($('#editInput').length == 0){
-        $('<textarea id="editInput">'+tweet.data.body+'</textarea><button id="editButton" class="button">Submit</button>').appendTo('#'+id);
+        $('<textarea id="editInput">'+tweet.data.body+'</textarea><button id="editButton" class="button">Submit</button>').insertAfter('#'+id);
         $('#root').on("click", "#editButton", (e)=>{
             e.preventDefault();
             updateTweet(id, $('#editInput').val());
@@ -200,4 +202,14 @@ async function submitReply(id, body){
       });
       refresh();
       return true;
+}
+
+async function deleteTweet(id){
+    const result = await axios({
+        method: 'delete',
+        url: 'https://comp426-1fa20.cs.unc.edu/a09/tweets/'+id,
+        withCredentials: true,
+    });
+    refresh();
+    return true;
 }
